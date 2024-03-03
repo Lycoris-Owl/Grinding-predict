@@ -5,19 +5,19 @@ np.random.seed(26)
 
 num_samples = 6000
 
-# 先以软铝合金进行精磨为例生成数据
+# 生成中强铝合金数据，输入和输出的范围均与软铝合金不同，映射关系有微小的不同（至少使得原模型拟合的曲线不完全使用）
 # 硬度
-x1 = np.random.uniform(20, 40, num_samples)
+x1 = np.random.uniform(40, 80, num_samples)
 # 原始粗糙度
 x2 = np.random.uniform(0.5, 1.5, num_samples)
 # 热导率
-x3 = np.random.uniform(150, 200, num_samples)
+x3 = np.random.uniform(170, 220, num_samples)
 # 弹性模量
-x4 = np.random.normal(70, 1, num_samples)
+x4 = np.random.uniform(70, 80, num_samples)
 # 屈服强度
-x5 = np.random.uniform(30, 100, num_samples)
+x5 = np.random.uniform(100, 300, num_samples)
 # 延伸性
-x6 = np.random.uniform(15, 25, num_samples)
+x6 = np.random.uniform(10, 20, num_samples)
 # 期望粗糙度 取0.1-1.0随机值但小于对应原始粗糙度
 x7 = []
 for x2_one in x2:
@@ -28,18 +28,18 @@ for x2_one in x2:
     x7.append(x7_one)
 x7 = np.array(x7)
 
-# 给定每一个因变量满足的映射
+# 映射
 
-# 磨料粒度
-y2_raw = 0.8*x2 + 0.5*np.sqrt(x5) + 0.8*(x6**2) + 1.0*x7 - 0.3
+# 磨料粒度 参数变动
+y2_raw = 0.8*x2 + 0.5*np.sqrt(x5) + 0.9*(x6**2) + 1.2*x7 - 0.3
 
-# 打磨力度
-y3_raw = 1.1*np.sqrt(x1) + 0.8*x2 + 0.1*x3 + 0.2*x4 + 0.5*x5 - 0.8*np.sqrt(x6) - 0.3*x7 + 0.2
+# 打磨力度 参数变动
+y3_raw = 1.1*np.sqrt(x1) + 1.0*x2 + 0.1*x3 + 0.4*x4 + 0.7*x5 - 0.8*np.sqrt(x6) - 0.3*x7 + 0.2
 
-# 打磨表面速度
-y4_raw = 0.5*x1 + 0.1*x2 + 0.8*np.sqrt(x3) + 0.1*x5 - 0.1*x6 - 0.7*np.sqrt(x7) + 10.0
+# 打磨表面速度 参数变动
+y4_raw = 0.5*x1 + 0.1*x2 + 0.8*np.sqrt(x3) + 0.1*x5 - 0.3*x6 - 0.9*np.sqrt(x7) + 10.0
 
-# 磨料选择 离散值，使用输入的加权来确定，给出每种磨料的权重函数
+# 磨料选择 离散值，使用输入的加权来确定，给出每种磨料的权重函数 不变动
 # x / x_mean
 unit_x1 = x1 / np.mean(x1)
 unit_x2 = x2 / np.mean(x2)
@@ -93,5 +93,5 @@ print("y4:", '\n', y4)
 data = pd.DataFrame({"x1": x1, "x2": x2, "x3": x3, "x4": x4, "x5": x5, "x6": x6, "x7": x7, "y1": y1, "y2": y2, "y3": y3, "y4": y4})
 print(data.head())
 # 保存数据
-save_path = 'data\\data_raw.xlsx'
+save_path = 'data\\data_new_raw.xlsx'
 data.to_excel(save_path, index=False)
